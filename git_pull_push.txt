@@ -1,0 +1,20 @@
+git pull push commands and usages,examples
+git pull:
+Fetches changes from a remote repository and merges them into your current branch.
+
+Command:
+git pull origin main
+
+Example:
+# Update your local main branch with changes from the remote
+git pull origin main
+
+git push:
+Uploads your local branch commits to a remote repository.
+
+Command:
+git push origin main
+
+Example:
+# Push your local main branch commits to the remote repository
+git push origin main
