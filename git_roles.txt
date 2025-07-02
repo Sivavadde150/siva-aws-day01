@@ -1,0 +1,50 @@
+# Common Git Roles
+
+1. **Repository Owner**
+    - Has full control over the repository.
+    - Can manage settings, collaborators, and permissions.
+    - Creation: Usually the user who creates the repository.
+      - Command: `git init` (to create a new repo) or create via hosting platform UI.
+    - Usage: Manage settings via platform UI (e.g., GitHub Settings).
+
+2. **Maintainer**
+    - Manages contributions and reviews pull requests.
+    - Merges code into main branches.
+    - Creation: Assigned by the owner via platform UI (e.g., GitHub: Settings > Manage Access).
+    - Usage: 
+      - Review PRs: Use platform UI or `git fetch origin pull/ID/head && git checkout FETCH_HEAD`
+      - Merge: `git merge branch-name` or via platform UI.
+
+3. **Contributor**
+    - Writes code and submits pull requests.
+    - May not have direct write access.
+    - Creation: Anyone can fork and contribute.
+      - Command: `git fork` (via platform UI), `git clone <repo-url>`
+    - Usage: 
+      - Make changes: `git add . && git commit -m "message"`
+      - Push: `git push origin branch-name`
+      - Submit PR via platform UI.
+
+4. **Collaborator**
+    - Has write access to the repository.
+    - Can push branches and manage issues.
+    - Creation: Owner adds user as collaborator via platform UI.
+    - Usage: 
+      - Push: `git push origin branch-name`
+      - Manage issues via platform UI.
+
+5. **Reviewer**
+    - Reviews code changes and provides feedback.
+    - Approves or requests changes on pull requests.
+    - Creation: Assigned as reviewer in PR via platform UI.
+    - Usage: Review and comment via platform UI.
+
+6. **Reader**
+    - Has read-only access.
+    - Can clone and view the repository.
+    - Creation: Default for public repos or assigned via platform UI.
+    - Usage: 
+      - Clone: `git clone <repo-url>`
+      - View via platform UI.
+
+# Note: Roles and permissions may vary by Git hosting platform (GitHub, GitLab, Bitbucket, etc.).
