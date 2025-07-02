@@ -1,0 +1,108 @@
+# Git Branching & Strategies with Commands
+
+## 1. Check Current Branch
+git branch
+# Example:
+# * main
+#   develop
+
+## 2. Create a New Branch
+git branch <branch-name>
+# Example:
+git branch feature/login
+
+## 3. Switch to a Branch
+git checkout <branch-name>
+# Example:
+git checkout develop
+# or (Git 2.23+)
+git switch <branch-name>
+# Example:
+git switch feature/login
+
+## 4. Create and Switch to a New Branch
+git checkout -b <branch-name>
+# Example:
+git checkout -b feature/register
+# or
+git switch -c <branch-name>
+# Example:
+git switch -c feature/register
+
+## 5. List All Branches
+git branch -a
+# Example:
+# * main
+#   develop
+#   remotes/origin/main
+#   remotes/origin/develop
+
+## 6. Delete a Branch
+git branch -d <branch-name>      # Safe delete (merged)
+# Example:
+git branch -d feature/login
+git branch -D <branch-name>      # Force delete
+# Example:
+git branch -D feature/old-experiment
+
+## 7. Merge a Branch into Current Branch
+git merge <branch-name>
+# Example:
+git checkout develop
+git merge feature/login
+
+## 8. Rebase a Branch
+git rebase <branch-name>
+# Example:
+git checkout feature/login
+git rebase develop
+
+## 9. Push a Branch to Remote
+git push origin <branch-name>
+# Example:
+git push origin feature/login
+
+## 10. Pull Latest Changes from Remote
+git pull
+# Example:
+git pull origin develop
+
+## 11. Delete Remote Branch
+git push origin --delete <branch-name>
+# Example:
+git push origin --delete feature/login
+
+# Common Branching Strategies
+
+## Feature Branch Workflow
+# Create a branch for each feature
+git checkout -b feature/<feature-name>
+# Example:
+git checkout -b feature/payment
+
+## Git Flow (Main, Develop, Feature, Release, Hotfix)
+# Main: production-ready code
+# Develop: integration branch for features
+# Feature: feature/<name>
+# Release: release/<version>
+# Hotfix: hotfix/<issue>
+# Example:
+git checkout -b release/1.0.0
+git checkout -b hotfix/urgent-bug
+
+## Forking Workflow
+# Fork repository, clone, create branches, and submit pull requests
+# Example:
+# 1. Fork on GitHub
+# 2. git clone https://github.com/your-username/repo.git
+# 3. git checkout -b feature/new-ui
+# 4. git push origin feature/new-ui
+# 5. Create a pull request
+
+# Example: Typical Feature Branch Workflow
+git checkout -b feature/login
+# work, commit changes
+git add .
+git commit -m "Add login feature"
+git push origin feature/login
+# create pull request and merge to main/develop
