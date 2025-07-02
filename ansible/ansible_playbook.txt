@@ -1,0 +1,27 @@
+---
+# This Ansible playbook automates the installation and starting of the Apache web server on a group of target hosts called 'webservers'.
+# 
+# Step-by-step explanation:
+# 1. The playbook is named "Install and start Apache" for clarity.
+# 2. The 'hosts' field specifies the target group of servers (webservers) where the tasks will be executed.
+# 3. 'become: yes' ensures that all tasks are run with elevated (sudo) privileges.
+# 4. The 'vars' section defines variables used in the playbook, such as 'http_port' set to 80.
+# 5. The 'tasks' section lists the actions to perform:
+#    - The first task installs the Apache package ('apache2') using the 'apt' module, ensuring it is present.
+#    - The second task starts the Apache service using the 'service' module.
+# 
+# This playbook is intended for Debian/Ubuntu systems where 'apt' is the package manager.
+- name: Install and start Apache           # Name of the playbook
+    hosts: webservers                        # Target hosts group (webservers)
+    become: yes                              # Run tasks with sudo privileges
+    vars:                                    # Variables section
+        http_port: 80                          # Define variable http_port with value 80
+    tasks:                                   # List of tasks to execute
+        - name: Install Apache                 # Task 1: Install Apache package
+            apt:                                 # Use the apt module (for Debian/Ubuntu)
+                name: apache2
+                state: present
+        - name: Start Apache service           # Task 2: Start the Apache service
+            service:                             # Use the service module
+                name: apache2
+                state: started
