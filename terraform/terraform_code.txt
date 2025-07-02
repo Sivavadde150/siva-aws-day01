@@ -1,0 +1,29 @@
+# Terraform script to provision an AWS EC2 instance
+
+# 1. Specify the Terraform provider (AWS in this case)
+provider "aws" {
+    region = "us-east-1" # AWS region to deploy resources
+}
+
+# 2. Define the AWS EC2 instance resource
+resource "aws_instance" "example" {
+    ami           = "ami-0c55b159cbfafe1f0" # Amazon Machine Image ID (Ubuntu in us-east-1)
+    instance_type = "t2.micro"              # Instance type (eligible for free tier)
+
+    # 3. Add a tag to the instance for identification
+    tags = {
+        Name = "ExampleInstance"
+    }
+}
+
+# 4. Output the public IP of the instance after creation
+output "instance_public_ip" {
+    value = aws_instance.example.public_ip
+    description = "The public IP address of the EC2 instance"
+}
+
+# --- Explanation of each element ---
+# provider: Configures the AWS provider and region.
+# resource "aws_instance": Defines an EC2 instance with specified AMI and type.
+# tags: Adds metadata to the instance for easier identification.
+# output: Displays the public IP after deployment.
