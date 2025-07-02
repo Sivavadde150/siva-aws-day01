@@ -1,0 +1,56 @@
+Ansible Introduction
+--------------------
+
+Ansible is an open-source automation tool used for configuration management, application deployment, and task automation. It uses simple YAML files called "playbooks" to describe automation jobs. Ansible connects to nodes (servers) over SSH and does not require any agent installation.
+
+Key Features:
+- Agentless architecture
+- Simple YAML syntax
+- Idempotent (safe to run multiple times)
+- Scalable and extensible
+
+Common Ansible Commands
+-----------------------
+
+1. Check Ansible version:
+    ansible --version
+
+2. Ping all hosts in inventory:
+    ansible all -m ping
+
+3. Run a command on all hosts:
+    ansible all -a "uptime"
+
+4. Use a specific inventory file:
+    ansible -i inventory_file all -m ping
+
+5. Run a playbook:
+    ansible-playbook playbook.yml
+
+6. Check playbook syntax:
+    ansible-playbook playbook.yml --syntax-check
+
+7. List all hosts in inventory:
+    ansible all --list-hosts
+
+8. Gather facts about hosts:
+    ansible all -m setup
+
+Inventory Example
+-----------------
+[webservers]
+server1.example.com
+server2.example.com
+
+Playbook Example
+----------------
+- name: Install Apache on webservers
+  hosts: webservers
+  become: yes
+  tasks:
+     - name: Install Apache
+        apt:
+          name: apache2
+          state: present
+
+For more details, visit: https://docs.ansible.com/
