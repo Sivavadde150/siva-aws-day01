@@ -1,0 +1,30 @@
+# Jenkins Notes
+
+## What is Jenkins?
+Jenkins is an open-source automation server used to automate parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery (CI/CD).
+
+## Key Features
+- **Easy Installation:** Java-based, runs on Windows, macOS, Linux.
+- **Extensible:** 1800+ plugins for integration with tools (Git, Maven, Docker, etc.).
+- **Distributed Builds:** Supports master-agent architecture.
+- **Pipeline as Code:** Define build pipelines using Groovy-based Jenkinsfile.
+- **Easy Configuration:** Web UI for job and system configuration.
+
+## Jenkins Architecture
+- **Master:** Schedules jobs, dispatches builds to agents, monitors agents.
+- **Agent (Slave):** Executes build jobs assigned by the master.
+
+## Common Jenkins Terminology
+- **Job/Project:** A runnable task (build, test, deploy).
+- **Build:** Execution of a job.
+- **Node:** Machine that runs Jenkins agent.
+- **Pipeline:** Workflow of automated steps.
+
+## Jenkins Pipeline Example
+
+### 1. Simple Freestyle Job
+- Build a Java project using Maven:
+    - Source Code Management: Git
+    - Build: `mvn clean install`
+
+### 2. Jenkinsfile (Declarative Pipeline)

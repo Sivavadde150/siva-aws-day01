@@ -1,0 +1,106 @@
+// This Jenkins Pipeline script automates the process of building, containerizing, and deploying a Java application to a Kubernetes cluster. It is written in Groovy using the declarative pipeline syntax, which makes it easy to read and maintain.
+
+// The pipeline begins by defining several environment variables, such as the application name, Docker image name, Docker Hub credentials ID, Kubernetes deployment name, and namespace. These variables are used throughout the pipeline to ensure consistency and make updates easier.
+
+// The pipeline consists of several stages:
+
+// Checkout: This stage pulls the source code from a specified GitHub repository, ensuring that the pipeline always works with the latest code.
+
+// Build with Maven: Here, Maven is used to compile the Java application and package it into a JAR file. The -DskipTests flag skips running tests during this build, which can speed up the process but may hide test failures.
+
+// Build Docker Image: This stage uses the Docker plugin to build a Docker image for the application. The image is tagged with the current Jenkins build number, ensuring each build produces a uniquely tagged image.
+
+// Push Docker Image: The newly built Docker image is pushed to Docker Hub. The image is pushed with both the build number tag and the latest tag. Authentication is handled using the provided Docker credentials.
+
+// Deploy to Kubernetes: The pipeline updates the Kubernetes deployment to use the new Docker image by running a kubectl set image command. This triggers a rolling update in the Kubernetes cluster, deploying the new version of the application.
+
+// Finally, the post section defines actions to take after the pipeline completes. If the pipeline succeeds, it echoes a success message; if it fails, it prompts the user to check the logs. This structure provides clear feedback on the pipeline's outcome.
+
+// Overall, this pipeline automates the continuous integration and deployment (CI/CD) process for a Java application, ensuring that code changes are quickly built, tested, containerized, and deployed to production.
+
+/**
+ * Jenkins Pipeline for building, pushing, and deploying a Java application using Docker and Kubernetes.
+ *
+ * Pipeline Stages:
+ * 1. Checkout: Clones the source code from the specified Git repository.
+ * 2. Build with Maven: Compiles the Java application and packages it, skipping tests.
+ * 3. Build Docker Image: Builds a Docker image for the application, tagging it with the current build number.
+ * 4. Push Docker Image: Authenticates with Docker Hub and pushes the newly built image with both the build number and 'latest' tags.
+ * 5. Deploy to Kubernetes: Updates the specified Kubernetes deployment with the new Docker image.
+ *
+ * Environment Variables:
+ * - APP_NAME: Name of the application container in the Kubernetes deployment.
+ * - DOCKER_IMAGE: Docker image name (including repository).
+ * - DOCKER_CREDENTIALS_ID: Jenkins credentials ID for Docker Hub authentication.
+ * - KUBE_DEPLOYMENT_NAME: Name of the Kubernetes deployment to update.
+ * - KUBE_NAMESPACE: Kubernetes namespace for deployment.
+ *
+ * Post Actions:
+ * - On success: Prints a success message.
+ * - On failure: Prints a failure message and suggests checking logs.
+ */
+
+pipeline {
+  agent any
+
+  environment {
+    APP_NAME = "my-java-app"
+    DOCKER_IMAGE = "yourdockerhubusername/my-java-app"
+    DOCKER_CREDENTIALS_ID = "docker-hub-creds"
+    KUBE_DEPLOYMENT_NAME = "java-app-deployment"
+    KUBE_NAMESPACE = "default"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git 'https://github.com/your-org/your-java-repo.git'
+      }
+    }
+
+    stage('Build with Maven') {
+      steps {
+        sh 'mvn clean package -DskipTests'
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        script {
+          docker.build("${DOCKER_IMAGE}:${BUILD_NUMBER}")
+        }
+      }
+    }
+
+    stage('Push Docker Image') {
+      steps {
+        script {
+          docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+            docker.image("${DOCKER_IMAGE}:${BUILD_NUMBER}").push()
+            docker.image("${DOCKER_IMAGE}:${BUILD_NUMBER}").push('latest')
+          }
+        }
+      }
+    }
+
+    stage('Deploy to Kubernetes') {
+      steps {
+        script {
+          sh """
+          kubectl set image deployment/${KUBE_DEPLOYMENT_NAME} ${APP_NAME}=${DOCKER_IMAGE}:${BUILD_NUMBER} \
+            -n ${KUBE_NAMESPACE} --record
+          """
+        }
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "Deployment successful!"
+    }
+    failure {
+      echo "Pipeline failed. Check logs."
+    }
+  }
+}
