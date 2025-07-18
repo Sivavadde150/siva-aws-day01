@@ -1,7 +1,10 @@
 Ansible Introduction
 --------------------
 
-Ansible is an open-source automation tool used for configuration management, application deployment, and task automation. It uses simple YAML files called "playbooks" to describe automation jobs. Ansible connects to nodes (servers) over SSH and does not require any agent installation.
+Ansible is an open-source automation tool used for configuration management,
+ application deployment, and task automation. It uses simple YAML files called 
+ "playbooks" to describe automation jobs. Ansible connects to nodes (servers)
+  over SSH and does not require any agent installation.
 
 Key Features:
 - Agentless architecture

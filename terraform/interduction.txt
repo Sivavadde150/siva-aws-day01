@@ -1,0 +1,26 @@
+# What is Terraform?
+
+Terraform is an open-source Infrastructure as Code (IaC) tool developed by HashiCorp. It allows you to define, provision, and manage cloud infrastructure and resources using declarative configuration files.
+
+## Use Cases
+
+- **Provisioning Cloud Infrastructure:** Automate the creation of servers, databases, networks, and other resources on AWS, Azure, GCP, and more.
+- **Multi-Cloud Deployments:** Manage resources across multiple cloud providers from a single configuration.
+- **Immutable Infrastructure:** Recreate infrastructure from code, ensuring consistency and repeatability.
+- **Version Control:** Store infrastructure definitions in source control for collaboration and auditing.
+- **Self-Service Infrastructure:** Enable teams to provision their own resources safely and efficiently.
+
+## Example
+
+```hcl
+provider "aws" {
+    region = "us-west-2"
+}
+
+resource "aws_instance" "example" {
+    ami           = "ami-0c55b159cbfafe1f0"
+    instance_type = "t2.micro"
+}
+```
+
+This example provisions an EC2 instance on AWS using Terraform.

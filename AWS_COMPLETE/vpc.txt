@@ -1,0 +1,93 @@
+# VPC (Virtual Private Cloud) in AWS        
+# VPC is a virtual network dedicated to your AWS account.
+# It is logically isolated from other virtual networks in the AWS Cloud.
+# VPC allows you to launch AWS resources into a virtual network that you've defined.
+# You can control aspects such as IP address range, subnets, route tables, and network gateways.
+
+# VPC Components (with AWS Management Console Steps and AWS CLI):
+
+# 1. Subnets: A subnet is a range of IP addresses in your VPC.
+#   - Subnets can be public or private.
+#   - Public subnets have a route to the internet via an Internet Gateway.
+#   - Private subnets do not have a direct route to the internet.
+#   - AWS Console: Go to VPC Dashboard > Subnets > Create Subnet. Select VPC, specify CIDR block, and availability zone.
+#   - AWS CLI: 
+#     aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block <cidr-block> --availability-zone <az>
+#   - Explanation: Subnets divide your VPC's IP range into smaller segments for organizing resources.
+
+# 2. Internet Gateway: Allows communication between instances in your VPC and the internet.
+#   - AWS Console: VPC Dashboard > Internet Gateways > Create Internet Gateway. Attach to your VPC.
+#   - AWS CLI:
+#     aws ec2 create-internet-gateway
+#     aws ec2 attach-internet-gateway --internet-gateway-id <igw-id> --vpc-id <vpc-id>
+#   - Explanation: Required for public subnets to access the internet.
+
+# 3. Route Tables: Set of rules to determine where network traffic is directed.
+#   - AWS Console: VPC Dashboard > Route Tables > Create Route Table. Associate with subnets.
+#   - AWS CLI:
+#     aws ec2 create-route-table --vpc-id <vpc-id>
+#     aws ec2 associate-route-table --route-table-id <rtb-id> --subnet-id <subnet-id>
+#   - Explanation: Controls routing for subnets.
+
+# 4. Network ACLs (Access Control Lists): Stateless firewall at the subnet level.
+#   - AWS Console: VPC Dashboard > Network ACLs > Create Network ACL. Add rules.
+#   - AWS CLI:
+#     aws ec2 create-network-acl --vpc-id <vpc-id>
+#     aws ec2 create-network-acl-entry --network-acl-id <acl-id> --rule-number <num> --protocol <protocol> --rule-action <allow|deny> --egress --cidr-block <cidr>
+#   - Explanation: Controls traffic in/out of subnets.
+
+# 5. Security Groups: Stateful firewall at the instance level.
+#   - AWS Console: EC2 Dashboard > Security Groups > Create Security Group. Add rules.
+#   - AWS CLI:
+#     aws ec2 create-security-group --group-name <name> --description <desc> --vpc-id <vpc-id>
+#     aws ec2 authorize-security-group-ingress --group-id <sg-id> --protocol <protocol> --port <port> --cidr <cidr>
+#   - Explanation: Controls traffic to/from EC2 instances.
+
+# 6. NAT Gateway: Allows private subnet instances to access the internet.
+#   - AWS Console: VPC Dashboard > NAT Gateways > Create NAT Gateway. Assign Elastic IP and subnet.
+#   - AWS CLI:
+#     aws ec2 allocate-address --domain vpc
+#     aws ec2 create-nat-gateway --subnet-id <subnet-id> --allocation-id <eip-alloc-id>
+#   - Explanation: Enables outbound internet for private subnets.
+
+# 7. VPC Peering: Connects two VPCs for private communication.
+#   - AWS Console: VPC Dashboard > Peering Connections > Create Peering Connection.
+#   - AWS CLI:
+#     aws ec2 create-vpc-peering-connection --vpc-id <vpc-id> --peer-vpc-id <peer-vpc-id>
+#   - Explanation: Allows routing traffic between VPCs.
+
+# 8. VPC Endpoints: Private connection to AWS services.
+#   - AWS Console: VPC Dashboard > Endpoints > Create Endpoint. Select service and VPC.
+#   - AWS CLI:
+#     aws ec2 create-vpc-endpoint --vpc-id <vpc-id> --service-name <service> --vpc-endpoint-type <type>
+#   - Explanation: Access AWS services privately without internet.
+
+# 9. VPN Connections: Secure connection to on-premises or other VPC.
+#   - AWS Console: VPC Dashboard > VPN Connections > Create VPN Connection.
+#   - AWS CLI:
+#     aws ec2 create-vpn-connection --type ipsec.1 --customer-gateway-id <cgw-id> --vpn-gateway-id <vgw-id>
+#   - Explanation: Securely connect VPC to remote networks.
+
+# 10. Direct Connect: Dedicated network connection from premises to AWS.
+#   - AWS Console: Direct Connect Console > Create Connection.
+#   - AWS CLI:
+#     aws directconnect create-connection --location <location> --bandwidth <bandwidth> --connection-name <name>
+#   - Explanation: Provides low-latency, high-bandwidth connection to AWS.
+
+# 11. VPC Flow Logs: Captures info about IP traffic in VPC.
+#   - AWS Console: VPC Dashboard > Your VPCs > Select VPC > Actions > Create Flow Log.
+#   - AWS CLI:
+#     aws ec2 create-flow-logs --resource-type VPC --resource-ids <vpc-id> --traffic-type ALL --log-group-name <log-group> --deliver-logs-permission-arn <role-arn>
+#   - Explanation: Useful for monitoring and troubleshooting network traffic.
+
+# 12. Elastic IP Addresses: Static IPv4 addresses for dynamic cloud computing.
+#   - AWS Console: EC2 Dashboard > Elastic IPs > Allocate Elastic IP address.
+#   - AWS CLI:
+#     aws ec2 allocate-address --domain vpc
+#   - Explanation: Assign static public IPs to resources.
+
+# 13. VPC CIDR Block: Range of IP addresses for the VPC.
+#   - AWS Console: VPC Dashboard > Your VPCs > Create VPC. Specify CIDR block.
+#   - AWS CLI:
+#     aws ec2 create-vpc --cidr-block <cidr-block>
+#   - Explanation: Defines the IP address range for your VPC.

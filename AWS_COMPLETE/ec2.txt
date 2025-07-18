@@ -1,0 +1,214 @@
+#write complete notes about ec2 in aws  
+# EC2 (Elastic Compute Cloud) in AWS        
+# EC2 is a web service that provides resizable compute capacity in the cloud.
+# It allows users to run virtual servers, known as instances, on-demand.    
+# EC2 instances can be launched in different sizes and configurations to meet various application requirements. 
+# Key Features of EC2 (with AWS Management Steps and AWS CLI):
+
+# 1. On-Demand Instances:
+#    AWS Management Steps:
+#    - Go to EC2 Dashboard > Instances > Launch Instance.
+#    - Select an AMI, instance type, configure details, add storage, add tags, configure security group, and launch.
+#    AWS CLI:
+#    - aws ec2 run-instances --image-id <ami-id> --instance-type <type> --key-name <key> --security-group-ids <sg-id> --subnet-id <subnet-id>
+
+# 2. Reserved Instances:
+#    AWS Management Steps:
+#    - Go to EC2 Dashboard > Reserved Instances > Purchase Reserved Instances.
+#    - Choose instance type, platform, term, and payment option.
+#    AWS CLI:
+#    - aws ec2 purchase-reserved-instances-offering --reserved-instances-offering-id <offering-id> --instance-count <count>
+
+# 3. Spot Instances:
+#    AWS Management Steps:
+#    - Go to EC2 Dashboard > Spot Requests > Request Spot Instances.
+#    - Specify instance details, maximum price, and launch configuration.
+#    AWS CLI:
+#    - aws ec2 request-spot-instances --spot-price <price> --instance-count <count> --launch-specification file://spec.json
+
+# 4. Auto Scaling:
+#    AWS Management Steps:
+#    - Go to EC2 Dashboard > Auto Scaling Groups > Create Auto Scaling Group.
+#    - Define launch template/configuration, group size, scaling policies, and notifications.
+#    AWS CLI:
+#    - aws autoscaling create-auto-scaling-group --auto-scaling-group-name <name> --launch-template LaunchTemplateName=<template>,Version=<version> --min-size <min> --max-size <max> --desired-capacity <desired> --vpc-zone-identifier <subnets>
+
+# 5. Elastic Load Balancing (ELB):
+#    AWS Management Steps:
+#    - Go to EC2 Dashboard > Load Balancers > Create Load Balancer.
+#    - Choose load balancer type, configure listeners, add instances, and set health checks.
+#    AWS CLI:
+#    - aws elb create-load-balancer --load-balancer-name <name> --listeners Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80 --subnets <subnet-ids> --security-groups <sg-ids>
+
+# 6. Security Groups:
+#    AWS Management Steps:
+#    - Go to EC2 Dashboard > Security Groups > Create Security Group.
+#    - Define inbound/outbound rules and assign to instances.
+#    AWS CLI:
+#    - aws ec2 create-security-group --group-name <name> --description <desc> --vpc-id <vpc-id>
+#    - aws ec2 authorize-security-group-ingress --group-id <sg-id> --protocol <protocol> --port <port> --cidr <cidr>
+
+# 7. Key Pairs:
+#    AWS Management Steps:
+#    - Go to EC2 Dashboard > Key Pairs > Create Key Pair.
+#    - Download the private key and use it for SSH access.
+#    AWS CLI:
+#    - aws ec2 create-key-pair --key-name <key-name> --query 'KeyMaterial' --output text > <key-name>.pem
+
+# 8. Amazon Machine Images (AMIs):
+#    AWS Management Steps:
+#    - Go to EC2 Dashboard > AMIs > Create Image (from instance) or select from Marketplace.
+#    AWS CLI:
+#    - aws ec2 create-image --instance-id <instance-id> --name <image-name> --description <desc>
+
+# 9. Instance Types:
+#    AWS Management Steps:
+#    - During instance launch, select the desired instance type based on workload.
+#    AWS CLI:
+#    - aws ec2 describe-instance-types
+
+# 10. Elastic Block Store (EBS):
+#     AWS Management Steps:
+#     - Go to EC2 Dashboard > Volumes > Create Volume.
+#     - Attach volume to an instance or create snapshots for backup.
+#     AWS CLI:
+#     - aws ec2 create-volume --availability-zone <az> --size <size>
+#     - aws ec2 attach-volume --volume-id <vol-id> --instance-id <instance-id> --device <device>
+
+# 11. Virtual Private Cloud (VPC):
+#     AWS Management Steps:
+#     - Go to VPC Dashboard > Create VPC.
+#     - Configure subnets, route tables, gateways, and security settings.
+#     AWS CLI:
+#     - aws ec2 create-vpc --cidr-block <cidr>
+#     - aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block <cidr>
+
+# 12. Monitoring and Logging (CloudWatch):
+#     AWS Management Steps:
+#     - Go to CloudWatch Dashboard > Alarms/Metrics/Logs.
+#     - Set up monitoring, create alarms, and view logs for EC2 instances.
+#     AWS CLI:
+#     - aws cloudwatch get-metric-statistics --namespace AWS/EC2 --metric-name CPUUtilization --dimensions Name=InstanceId,Value=<instance-id> --start-time <start> --end-time <end> --period 300 --statistics Average
+
+# 13. Elastic IP Addresses:
+#     AWS Management Steps:
+#     - Go to EC2 Dashboard > Elastic IPs > Allocate Elastic IP.
+#     - Associate Elastic IP with an instance.
+#     AWS CLI:
+#     - aws ec2 allocate-address
+#     - aws ec2 associate-address --instance-id <instance-id> --allocation-id <alloc-id>
+
+# 14. Instance Metadata:
+#     AWS Management Steps:
+#     - Access metadata from within the instance using HTTP: `curl http://169.254.169.254/latest/meta-data/`
+#     AWS CLI:
+#     - Not available via CLI; access from within the instance.
+
+# 15. Placement Groups:
+#     AWS Management Steps:
+#     - Go to EC2 Dashboard > Placement Groups > Create Placement Group.
+#     - Launch instances into the placement group.
+#     AWS CLI:
+#     - aws ec2 create-placement-group --group-name <name> --strategy <cluster|spread|partition>
+
+# 16. Dedicated Hosts:
+#     AWS Management Steps:
+#     - Go to EC2 Dashboard > Dedicated Hosts > Allocate Host.
+#     - Launch instances onto the dedicated host.
+#     AWS CLI:
+#     - aws ec2 allocate-hosts --instance-type <type> --availability-zone <az> --quantity <count>
+
+# 17. Instance Store:
+#     AWS Management Steps:
+#     - Select instance types with instance store during launch.
+#     - Use the ephemeral storage for temporary data.
+#     AWS CLI:
+#     - Specify instance store-backed AMIs and instance types in run-instances.
+
+# 18. AWS Marketplace:
+#     AWS Management Steps:
+#     - Go to AWS Marketplace, select software, and launch on EC2.
+#     AWS CLI:
+#     - aws ec2 describe-images --owners aws-marketplace
+
+# 19. EC2 Image Builder:
+#     AWS Management Steps:
+#     - Go to EC2 Image Builder > Create Image Pipeline.
+#     - Define source image, components, tests, and distribution settings.
+#     AWS CLI:
+#     - aws imagebuilder create-image-pipeline --name <name> --image-recipe-arn <arn> --infrastructure-configuration-arn <arn>
+
+# 20. EC2 Systems Manager:
+#     AWS Management Steps:
+#     - Go to Systems Manager > Managed Instances.
+#     - Use Run Command, Patch Manager, and Automation features.
+#     AWS CLI:
+#     - aws ssm describe-instance-information
+#     - aws ssm send-command --instance-ids <id> --document-name <doc>
+
+# 21. EC2 Instance Scheduler:
+#     AWS Management Steps:
+#     - Deploy the Instance Scheduler solution from AWS Solutions Library.
+#     - Configure schedules and tag instances for scheduling.
+#     AWS CLI:
+#     - aws ec2 start-instances --instance-ids <id>
+#     - aws ec2 stop-instances --instance-ids <id>
+
+# 22. EC2 Auto Recovery:
+#     AWS Management Steps:
+#     - Set up CloudWatch alarms with recovery actions for instances.
+#     AWS CLI:
+#     - aws cloudwatch put-metric-alarm --alarm-name <name> --metric-name StatusCheckFailed_System --namespace AWS/EC2 --statistic Average --period 60 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --dimensions Name=InstanceId,Value=<id> --evaluation-periods 2 --alarm-actions arn:aws:automate:<region>:ec2:recover
+
+# 23. EC2 Fleet:
+#     AWS Management Steps:
+#     - Go to EC2 Dashboard > Fleets > Create Fleet.
+#     - Define launch template, instance types, and allocation strategy.
+#     AWS CLI:
+#     - aws ec2 create-fleet --launch-template-configs file://fleet-config.json --target-capacity-specification file://capacity.json
+
+# 24. EC2 Capacity Reservations:
+#     AWS Management Steps:
+#     - Go to EC2 Dashboard > Capacity Reservations > Create Capacity Reservation.
+#     - Specify instance type, quantity, and AZ.
+#     AWS CLI:
+#     - aws ec2 create-capacity-reservation --instance-type <type> --instance-count <count> --availability-zone <az>
+
+# 25. EC2 Instance Metadata Service (IMDS):
+#     AWS Management Steps:
+#     - Access metadata from within the instance using HTTP: `curl http://169.254.169.254/latest/meta-data/`
+#     - Configure metadata options during instance launch.
+#     AWS CLI:
+#     - Not available via CLI; access from within the instance.
+
+# 26. EC2 Spot Fleet:
+#     AWS Management Steps:
+#     - Go to EC2 Dashboard > Spot Requests > Request Spot Fleet.
+#     - Define target capacity, instance types, and allocation strategy.
+#     AWS CLI:
+#     - aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
+
+# 27. EC2 Instance Store Volumes:
+#     AWS Management Steps:
+#     - Select instance types with instance store during launch.
+#     - Use for temporary data, not for persistent storage.
+#     AWS CLI:
+#     - Specify instance store-backed AMIs and instance types in run-instances.
+
+# 28. EC2 Dedicated Instances:
+#     AWS Management Steps:
+#     - Launch instances with tenancy set to "dedicated" in VPC settings.
+#     AWS CLI:
+#     - aws ec2 run-instances --image-id <ami-id> --instance-type <type> --placement Tenancy=dedicated
+
+# 29. EC2 Instance Metadata Service Version 2 (IMDSv2):
+#     AWS Management Steps:
+#     - Enable IMDSv2 during instance launch or modify metadata options on running instances.
+#     AWS CLI:
+#     - aws ec2 modify-instance-metadata-options --instance-id <id> --http-tokens required
+
+# 30. EC2 Instance Tags:
+#     AWS Management Steps:
+#     - Go to EC2 Dashboard > Instances > Select Instance > Tags > Add/Edit Tags.
+#     AWS CLI:
+#     - aws ec2 create-tags --resources <resource-id> --tags Key=<key>,Value=<value>

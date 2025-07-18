@@ -1,0 +1,33 @@
+# AWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers.
+# It automatically scales your applications by running code in response to events.
+# Key Features of AWS Lambda:
+# 1. Event-Driven: Lambda functions can be triggered by various AWS services such as
+#    - S3 (object creation, deletion)
+#      AWS Management Console: Go to S3 > Properties > Event notifications > Create event to trigger Lambda.
+#      AWS CLI: Use `aws s3api put-bucket-notification-configuration` to set up event notifications.
+#    - DynamoDB (table updates)
+#      AWS Management Console: Go to DynamoDB > Triggers > Create trigger to link Lambda.
+#      AWS CLI: Use `aws dynamodb update-table` with `--stream-specification` and then `aws lambda create-event-source-mapping`.
+#    - API Gateway (HTTP requests)
+#      AWS Management Console: Go to API Gateway > Create API > Integrations > Lambda Function.
+#      AWS CLI: Use `aws apigateway create-resource` and `aws apigateway put-integration` to connect Lambda.
+#    - CloudWatch (scheduled events)
+#      AWS Management Console: Go to CloudWatch > Rules > Create rule > Add Lambda as target.
+#      AWS CLI: Use `aws events put-rule` and `aws events put-targets` to schedule Lambda.
+#    - SNS (notifications)
+#      AWS Management Console: Go to SNS > Topics > Subscriptions > Add Lambda as subscriber.
+#      AWS CLI: Use `aws sns subscribe` with `--protocol lambda`.
+#    - SQS (message queues)
+#      AWS Management Console: Go to SQS > Queue Actions > Configure trigger > Add Lambda.
+#      AWS CLI: Use `aws lambda create-event-source-mapping` with `--event-source-arn` for SQS.
+# 2. Stateless: Each Lambda function execution is stateless, meaning it does not retain
+#    any data from previous executions. If you need to maintain state, you can use services
+#    like DynamoDB or S3.
+#    AWS Management Console: Store state in DynamoDB tables or S3 buckets.
+#    AWS CLI: Use `aws dynamodb put-item` or `aws s3 cp` to manage state.
+# 3. Language Support: Lambda supports multiple programming languages including:
+#    - Node.js
+#    - Python
+#    - Java
+#    AWS Management Console: Select runtime when creating a Lambda function.
+#    AWS CLI: Use `aws lambda create-function --runtime <runtime>` to specify language.

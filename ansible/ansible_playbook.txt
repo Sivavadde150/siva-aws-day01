@@ -16,7 +16,7 @@
     become: yes                              # Run tasks with sudo privileges
     vars:                                    # Variables section
         http_port: 80                          # Define variable http_port with value 80
-    tasks:                                   # List of tasks to execute
+    tasks:                              # List of tasks to execute
         - name: Install Apache                 # Task 1: Install Apache package
             apt:                                 # Use the apt module (for Debian/Ubuntu)
                 name: apache2
