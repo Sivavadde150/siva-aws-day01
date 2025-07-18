@@ -1,0 +1,266 @@
+## Kubernetes Commands and Examples
+### What is Kubernetes?
+
+**Kubernetes** is an open-source platform for automating deployment, scaling, and management of containerized applications. It groups containers into logical units called *pods* for easy management and discovery, and provides features like self-healing, load balancing, service discovery, and automated rollouts/rollbacks. Kubernetes helps you efficiently run and manage applications in clustered environments, whether on-premises or in the cloud.
+
+## Kubernetes Real-Time Scenarios
+
+### 1. Canary Deployments
+
+**Scenario:** Gradually roll out a new version to a small subset of users before a full release.
+
+**How:**  
+Deploy a new version alongside the stable one and use labels/selectors or Ingress rules to direct a percentage of traffic to the canary deployment.
+
+### 2. Handling Node Failures
+
+**Scenario:** A node goes down unexpectedly.
+
+**How:**  
+Kubernetes automatically reschedules pods from the failed node onto healthy nodes, ensuring high availability.
+
+### 3. Resource Quotas and Limits
+
+**Scenario:** Prevent a single team or app from consuming all cluster resources.
+
+**How:**  
+Set resource quotas and limits at the namespace level to control CPU, memory, and object counts.
+
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+    name: dev-quota
+    namespace: dev
+spec:
+    hard:
+        pods: "10"
+        requests.cpu: "4"
+        requests.memory: 8Gi
+        limits.cpu: "8"
+        limits.memory: 16Gi
+```
+
+### 4. Logging and Monitoring
+
+**Scenario:** Collect logs and metrics from all pods for troubleshooting and performance analysis.
+
+**How:**  
+Integrate tools like Prometheus for monitoring and EFK/ELK stack for centralized logging.
+
+### 5. Disaster Recovery
+
+**Scenario:** Restore applications and data after accidental deletion or cluster failure.
+
+**How:**  
+Use regular backups of persistent volumes and Kubernetes manifests. Tools like Velero can automate backup and restore processes.
+
+### Basic Commands
+
+```sh
+# List all nodes in the cluster
+kubectl get nodes
+
+# List all pods in all namespaces
+kubectl get pods --all-namespaces
+
+# Describe a specific pod
+kubectl describe pod <pod-name>
+
+# View logs of a pod
+kubectl logs <pod-name>
+
+# Apply a configuration from a YAML file
+kubectl apply -f deployment.yaml
+
+# Delete resources defined in a YAML file
+kubectl delete -f deployment.yaml
+
+# Scale a deployment to 5 replicas
+kubectl scale deployment/my-deployment --replicas=5
+
+# Update an image in a deployment
+kubectl set image deployment/my-deployment my-container=nginx:1.25
+```
+
+### Example: Deploying a Simple Web Application
+
+**Deployment YAML (`nginx-deployment.yaml`):**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nginx-deployment
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: nginx
+    template:
+        metadata:
+            labels:
+                app: nginx
+        spec:
+            containers:
+            - name: nginx
+                image: nginx:latest
+                ports:
+                - containerPort: 80
+```
+
+**Service YAML (`nginx-service.yaml`):**
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+    name: nginx-service
+spec:
+    type: NodePort
+    selector:
+        app: nginx
+    ports:
+        - protocol: TCP
+            port: 80
+            targetPort: 80
+            nodePort: 30080
+```
+
+**Deploy and Expose:**
+```sh
+kubectl apply -f nginx-deployment.yaml
+kubectl apply -f nginx-service.yaml
+kubectl get pods
+kubectl get svc
+```
+
+---
+
+## Ingress and NGINX Ingress Controller
+
+### What is Ingress?
+
+Ingress is a Kubernetes API object that manages external access to services in a cluster, typically HTTP/HTTPS. It provides routing rules to map external requests to internal services.
+
+### Installing NGINX Ingress Controller
+
+You can install the NGINX Ingress Controller using Helm or with YAML manifests. Here’s a simple example using manifests:
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.5/deploy/static/provider/cloud/deploy.yaml
+```
+
+Wait for the ingress controller pods to be running:
+
+```sh
+kubectl get pods -n ingress-nginx
+```
+
+### Example: Ingress Resource for NGINX Service
+
+**Ingress YAML (`nginx-ingress.yaml`):**
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: nginx-ingress
+    annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+    rules:
+    - host: my-nginx.example.com
+        http:
+            paths:
+            - path: /
+                pathType: Prefix
+                backend:
+                    service:
+                        name: nginx-service
+                        port:
+                            number: 80
+```
+
+**Apply the Ingress:**
+```sh
+kubectl apply -f nginx-ingress.yaml
+kubectl get ingress
+```
+
+**Accessing the Application:**
+
+- Update your `/etc/hosts` file to point `my-nginx.example.com` to the external IP of the ingress controller.
+- Open `http://my-nginx.example.com` in your browser.
+
+---
+
+## Real-World Scenarios
+
+### 1. Rolling Updates for Zero Downtime
+
+**Scenario:** Updating a production web app to a new version without downtime.
+
+**How:**  
+Use `kubectl set image` or update the deployment YAML. Kubernetes gradually replaces old pods with new ones.
+
+```sh
+kubectl set image deployment/web-app web-app=web-app:v2
+```
+
+### 2. Auto-Scaling Based on Load
+
+**Scenario:** Automatically scale the number of pods when CPU usage increases.
+
+**How:**  
+Enable Horizontal Pod Autoscaler.
+
+```sh
+kubectl autoscale deployment web-app --cpu-percent=50 --min=2 --max=10
+```
+
+### 3. Blue-Green Deployments
+
+**Scenario:** Deploy a new version alongside the old one, test it, then switch traffic.
+
+**How:**  
+Create a new deployment/service, test, then update the service selector to point to the new version.
+
+### 4. Secret Management
+
+**Scenario:** Store database credentials securely.
+
+**How:**  
+Create a Kubernetes Secret and mount it as an environment variable or file.
+
+```sh
+kubectl create secret generic db-creds --from-literal=username=admin --from-literal=password=secret
+```
+
+### 5. Multi-Environment Deployments
+
+**Scenario:** Deploy the same app to dev, staging, and prod with different configs.
+
+**How:**  
+Use different namespaces and ConfigMaps/Secrets for each environment.
+
+```sh
+kubectl create namespace staging
+kubectl apply -f deployment.yaml -n staging
+## Kubernetes Architecture: Cluster, Nodes, and Pods
+
+### Cluster
+
+A **Kubernetes cluster** is a set of machines (physical or virtual) that work together to run containerized applications. The cluster manages the deployment, scaling, and operation of application containers across these machines.
+
+### Nodes
+
+A **node** is a single machine within the Kubernetes cluster. There are two types of nodes:
+- **Master node (control plane):** Manages the cluster, schedules workloads, and handles the overall orchestration.
+- **Worker node:** Runs the application workloads (pods). Each worker node contains the necessary services to run pods and is managed by the master node.
+
+### Pods
+
+A **pod** is the smallest and simplest unit in the Kubernetes object model. A pod represents a single instance of a running process in your cluster and can contain one or more tightly coupled containers. Pods share storage, network, and a specification for how to run the containers.
+
+**Summary:**  
+- The **cluster** is the whole system.
+- **Nodes** are the machines inside the cluster.
+- **Pods** are the units of work (containers) running on the nodes.
